@@ -1,153 +1,98 @@
 <!DOCTYPE html>
-<html lang="sw">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>SHINELYNE - Encrypted SMS</title>
+<html lang="sw"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SHINELYNE SMS</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:#000;color:#fff;font-family:system-ui;height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden}
-#login{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:24px;background:radial-gradient(circle at 20% 10%,#111 0%,#000 70%)}
-h1{color:#00ff88;font-size:34px;letter-spacing:3px;font-weight:900}
-.sub{color:#444;font-size:12px;letter-spacing:2px;margin:6px 0 28px}
-input{width:100%;max-width:360px;padding:16px 18px;margin:8px 0;border-radius:14px;border:1.5px solid #222;background:#0f0f0f;color:#fff;font-size:15px;outline:none}
+body{background:#000;color:#fff;font-family:system-ui;height:100vh;display:flex;flex-direction:column}
+#login{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:24px}
+h1{color:#00ff88;font-size:36px;letter-spacing:2px}
+input{width:100%;max-width:360px;padding:16px;margin:8px 0;border-radius:12px;border:1px solid #222;background:#111;color:#fff;font-size:16px;outline:none}
 input:focus{border-color:#00ff88}
-input#secret{border-color:#ffaa00;background:#0f0a00}
-button.main{width:100%;max-width:360px;padding:18px;margin-top:16px;border-radius:14px;border:none;background:linear-gradient(135deg,#00ff88,#00cc66);color:#000;font-weight:900;font-size:16px;cursor:pointer}
-#chat{display:none;flex:1;flex-direction:column;overflow:hidden}
-.top{padding:12px 16px;background:#0a0a0a;border-bottom:1px solid #1c1c1c;display:flex;justify-content:space-between;align-items:center}
-#msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
-.msg{padding:12px 14px;border-radius:18px;max-width:82%;font-size:14px;line-height:1.4;word-break:break-all}
-.msg.other{background:#141414;border:1px solid #222;align-self:flex-start;border-bottom-left-radius:4px}
-.msg.me{background:#00ff88;color:#000;align-self:flex-end;border-bottom-right-radius:4px;font-weight:600}
-.msg .from{font-size:10px;opacity:.5;margin-bottom:4px;font-weight:700}
-.msg.encrypted{background:#0a0a0a!important;border:1px dashed #333!important;color:#ffaa00!important;font-family:monospace;font-size:11px;letter-spacing:1px}
-.bottom{padding:12px;background:#0a0a0a;border-top:1px solid #1c1c1c;display:flex;gap:10px;align-items:center}
+button{width:100%;max-width:360px;padding:16px;margin-top:14px;border-radius:12px;border:none;background:#00ff88;color:#000;font-weight:900;font-size:16px;cursor:pointer}
+#chat{display:none;flex:1;flex-direction:column}
+.top{padding:12px 16px;background:#0a0a0a;border-bottom:1px solid #222;display:flex;justify-content:space-between}
+#msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px}
+.msg{padding:12px 14px;border-radius:16px;max-width:80%;font-size:14px}
+.msg.other{background:#151515;border:1px solid #222;align-self:flex-start}
+.msg.me{background:#00ff88;color:#000;align-self:flex-end;font-weight:600}
+.msg .from{font-size:10px;opacity:.6;margin-bottom:3px}
+.msg.enc{font-family:monospace;color:#ffaa00;background:#0f0a00!important;border:1px dashed #443300!important;font-size:11px;word-break:break-all}
+#unlockBar{padding:10px 12px;background:#0a0a0a;display:flex;gap:8px;border-bottom:1px solid #1a1a1a}
+#unlockBar input{margin:0;flex:1;padding:12px}
+#unlockBar button{width:90px;margin:0;padding:12px;background:#ffaa00}
+.bottom{padding:12px;background:#0a0a0a;display:flex;gap:8px;border-top:1px solid #222}
 .bottom input{flex:1;margin:0}
-.bottom button{width:60px;height:50px;border-radius:14px;border:none;background:#00ff88;color:#000;font-weight:900;cursor:pointer}
-#unlockBar{padding:10px 14px;background:#111;border-bottom:1px solid #222;display:flex;gap:8px;align-items:center}
-#unlockBar input{margin:0;flex:1;padding:12px;border-color:#ffaa00}
-#unlockBar button{padding:12px 16px;border-radius:10px;border:none;background:#ffaa00;color:#000;font-weight:800;cursor:pointer}
-.timer{font-size:10px;color:#ffaa00;margin-left:6px}
-</style>
-</head>
+.bottom button{width:70px;margin:0}
+</style></head>
 <body>
 <div id="login">
-<h1 style="font-size:60px">🔐</h1>
 <h1>SHINELYNE</h1>
-<div class="sub">SMS ZIMEFICHWA KAMA NAMBA</div>
-<input id="room" placeholder="Room ID" value="shinelyne12">
-<input id="secret" type="password" placeholder="🔑 Secret Key (mf: 1234) - LAZIMA">
+<p style="color:#666;margin:10px 0 20px;font-size:12px">SMS ZA SIRI - NAMBA MODE</p>
+<input id="room" value="shinelyne12" placeholder="Room ID">
 <input id="name" placeholder="Jina lako">
-<button class="main" onclick="join()">INGIA - SMS ZITAKUWA NAMBA 🔢</button>
-<div style="margin-top:16px;font-size:11px;color:#333;text-align:center;max-width:340px">Room + Secret Key sawa ndio mtasoma SMS. Bila key, SMS zitaonekana kama namba tu: 728372...</div>
+<button onclick="join()">INGIA</button>
 </div>
-
 <div id="chat">
-<div class="top"><div><b id="rname"># shinelyne</b><div style="font-size:10px;color:#ffaa00">🔒 Encrypted Mode</div></div><div><span id="status" style="font-size:11px;color:#00ff88">● Live</span> <span onclick="location.reload()" style="margin-left:10px;cursor:pointer">✕</span></div></div>
-
+<div class="top"><b id="rname"></b><div><span id="status">● Live</span> <span onclick="location.reload()" style="margin-left:12px">✕</span></div></div>
 <div id="unlockBar">
-<input id="unlockKey" type="password" placeholder="Weka Secret Key kufungua SMS">
-<button onclick="unlockSMS()">FUNGUA 🔓</button>
-<span id="timer" class="timer"></span>
+<input id="ukey" type="password" placeholder="Weka 1234 kufungua SMS (default 1234)">
+<button onclick="toggleLock()">FUNGUA</button>
+<span id="tmr" style="font-size:11px;color:#ffaa00;margin-left:6px"></span>
 </div>
-
-<div id="msgs"></div>
-<div class="bottom">
-<input id="msg" placeholder="Andika ujumbe..." onkeypress="if(event.key==='Enter')send()">
-<button onclick="send()">TUMA</button>
+<div id="msgs"><div style="text-align:center;color:#333;padding:40px">Inapakia SMS...</div></div>
+<div class="bottom"><input id="msg" placeholder="Andika..." onkeypress="if(event.key==='Enter')send()"><button onclick="send()">TUMA</button></div>
 </div>
-</div>
-
 <script>
-let room,name,secret,lastCount=0,allMessages=[],isUnlocked=false,unlockTimeout=null,countdownInterval=null;
-
-function encryptToNumbers(text){
-  // Badilisha herufi kuwa namba: "hi" -> "104105"
-  let out='';
-  for(let c of text){ out+=c.charCodeAt(0).toString().padStart(3,'0'); }
-  // fanya ionekane kama namba ndefu
-  return out.match(/.{1,30}/g).join(' ');
-}
-
+let room,name,all=[],locked=true,timer=null,cd=null;
+const DEFAULT_KEY='1234';
+function toNum(s){let o='';for(let c of s){o+=c.charCodeAt(0).toString(16).padStart(2,'0')}return o.toUpperCase().match(/.{1,24}/g).join(' ')}
 function join(){
   room=document.getElementById('room').value.trim()||'general';
   name=document.getElementById('name').value.trim()||'Mtu';
-  secret=document.getElementById('secret').value.trim();
-  if(!secret){alert('Weka Secret Key! Hii ndio funguo ya kuficha SMS'); return;}
   document.getElementById('login').style.display='none';
   document.getElementById('chat').style.display='flex';
   document.getElementById('rname').innerText='# '+room;
-  document.getElementById('unlockKey').value=secret;
-  load();
-  setInterval(load,1500);
+  document.getElementById('ukey').value=DEFAULT_KEY;
+  load(); setInterval(load,1500);
 }
-
 async function load(){
   try{
-    let url='/api/messages?room='+encodeURIComponent(room)+'&secret='+encodeURIComponent(secret)+'&_='+Date.now();
-    let r=await fetch(url);
+    let r=await fetch('/api/messages?room='+encodeURIComponent(room)+'&_='+Date.now());
     let d=await r.json();
     if(!Array.isArray(d)) return;
-    if(d.length===lastCount && isUnlocked===false) return;
-    allMessages=d;
-    lastCount=d.length;
-    renderMessages();
-  }catch(e){}
+    if(d.length===all.length && locked) return; // avoid flicker
+    all=d;
+    render();
+  }catch(e){console.log(e)}
 }
-
-function renderMessages(){
+function render(){
   let c=document.getElementById('msgs');
-  if(allMessages.length===0){c.innerHTML='<div style="text-align:center;padding:40px;color:#333">🔢 Hakuna SMS<br><span style="font-size:11px">Zitaonekana kama namba</span></div>'; return;}
+  if(all.length===0){c.innerHTML='<div style="text-align:center;color:#333;padding:40px">🔒 Hakuna SMS<br>Tuma moja uone kama namba</div>';return}
   c.innerHTML='';
-  allMessages.forEach(m=>{
+  all.forEach(m=>{
     let div=document.createElement('div');
-    let isMe=m.sender===name;
-    div.className='msg '+(isMe?'me':'other')+(isUnlocked?'':' encrypted');
-    let displayText;
-    if(isUnlocked){
-      displayText = (m.message||'').replace(/</g,'&lt;');
-    } else {
-      displayText = encryptToNumbers(m.message||'');
-    }
-    let safeSender=(m.sender||'Mtu').replace(/</g,'&lt;');
-    div.innerHTML='<div class="from">'+safeSender+' '+(isUnlocked?'':'🔒')+'</div>'+displayText;
+    div.className='msg '+(m.sender===name?'me':'other')+(locked?' enc':'');
+    let txt = locked ? toNum(m.message) : (m.message||'').replace(/</g,'&lt;');
+    div.innerHTML='<div class="from">'+(m.sender||'Mtu')+(locked?' 🔒':'')+'</div>'+txt;
     c.appendChild(div);
   });
   c.scrollTop=c.scrollHeight;
-  document.getElementById('status').innerText='● Live • '+allMessages.length+(isUnlocked?' • IMEFUNGULIWA':' • IMEFUNGWA');
+  document.getElementById('status').innerText='● Live • '+all.length+(locked?' • NAMBA':' • WAZI');
 }
-
-function unlockSMS(){
-  let key=document.getElementById('unlockKey').value.trim();
-  if(key!==secret){alert('Secret Key sio sahihi! Weka: '+secret); return;}
-  isUnlocked=true;
-  renderMessages();
-  document.getElementById('timer').innerText='';
-  let sec=10;
-  document.getElementById('timer').innerText='⏳ '+sec+'s';
-  if(unlockTimeout) clearTimeout(unlockTimeout);
-  if(countdownInterval) clearInterval(countdownInterval);
-  countdownInterval=setInterval(()=>{
-    sec--; document.getElementById('timer').innerText='⏳ '+sec+'s';
-    if(sec<=0){clearInterval(countdownInterval)}
-  },1000);
-  unlockTimeout=setTimeout(()=>{
-    isUnlocked=false;
-    renderMessages();
-    document.getElementById('timer').innerText='🔒 Imefungwa tena';
-    setTimeout(()=>document.getElementById('timer').innerText='',2000);
-  },10000);
+function toggleLock(){
+  if(!locked){ // lock again
+    locked=true; render(); document.getElementById('tmr').innerText=''; clearTimeout(timer); clearInterval(cd); document.querySelector('#unlockBar button').innerText='FUNGUA'; return;
+  }
+  let k=document.getElementById('ukey').value.trim();
+  if(k!==DEFAULT_KEY && k!==''){alert('Weka Key: '+DEFAULT_KEY); return}
+  locked=false; render();
+  let btn=document.querySelector('#unlockBar button'); btn.innerText='FUNGA';
+  let s=12; document.getElementById('tmr').innerText='⏳ '+s+'s';
+  cd=setInterval(()=>{s--; document.getElementById('tmr').innerText='⏳ '+s+'s'; if(s<=0)clearInterval(cd)},1000);
+  timer=setTimeout(()=>{locked=true; render(); document.getElementById('tmr').innerText='🔒 Imefungwa'; btn.innerText='FUNGUA'; setTimeout(()=>document.getElementById('tmr').innerText='',2000)},12000);
 }
-
 async function send(){
-  let i=document.getElementById('msg');
-  let t=i.value.trim(); if(!t) return; i.value='';
-  try{
-    await fetch('/api/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({room,sender:name,message:t,secret})});
-    load();
-  }catch(e){}
+  let i=document.getElementById('msg'); let t=i.value.trim(); if(!t)return; i.value='';
+  try{await fetch('/api/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({room,sender:name,message:t})}); load();}catch(e){alert('Error kutuma')}
 }
-</script>
-</body>
-</html>
+</script></body></html>
