@@ -1,0 +1,6 @@
+services:
+- type: web
+  name: secret-sms-worldwide
+  env: node
+  buildCommand: npm install
+  startCommand: node server.js
