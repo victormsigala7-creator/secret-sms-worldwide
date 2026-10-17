@@ -1,22 +1,21 @@
 <!DOCTYPE html>
 <html lang="sw"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SHINELYNE SMS</title>
+<title>SHINELYNE - Permanent SMS</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#000;color:#fff;font-family:system-ui;height:100vh;display:flex;flex-direction:column}
 #login{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:24px}
-h1{color:#00ff88;font-size:36px;letter-spacing:2px}
-input{width:100%;max-width:360px;padding:16px;margin:8px 0;border-radius:12px;border:1px solid #222;background:#111;color:#fff;font-size:16px;outline:none}
-input:focus{border-color:#00ff88}
+h1{color:#00ff88;font-size:36px;letter-spacing:3px}
+input{width:100%;max-width:360px;padding:16px;margin:8px 0;border-radius:12px;border:1px solid #222;background:#111;color:#fff;font-size:16px}
 button{width:100%;max-width:360px;padding:16px;margin-top:14px;border-radius:12px;border:none;background:#00ff88;color:#000;font-weight:900;font-size:16px;cursor:pointer}
 #chat{display:none;flex:1;flex-direction:column}
 .top{padding:12px 16px;background:#0a0a0a;border-bottom:1px solid #222;display:flex;justify-content:space-between}
 #msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px}
-.msg{padding:12px 14px;border-radius:16px;max-width:80%;font-size:14px}
+.msg{padding:12px 14px;border-radius:16px;max-width:80%;font-size:14px;word-break:break-word}
 .msg.other{background:#151515;border:1px solid #222;align-self:flex-start}
 .msg.me{background:#00ff88;color:#000;align-self:flex-end;font-weight:600}
 .msg .from{font-size:10px;opacity:.6;margin-bottom:3px}
-.msg.enc{font-family:monospace;color:#ffaa00;background:#0f0a00!important;border:1px dashed #443300!important;font-size:11px;word-break:break-all}
+.msg.enc{font-family:monospace;color:#ffaa00;background:#0f0a00!important;border:1px dashed #443300!important;font-size:11px}
 #unlockBar{padding:10px 12px;background:#0a0a0a;display:flex;gap:8px;border-bottom:1px solid #1a1a1a}
 #unlockBar input{margin:0;flex:1;padding:12px}
 #unlockBar button{width:90px;margin:0;padding:12px;background:#ffaa00}
@@ -27,47 +26,46 @@ button{width:100%;max-width:360px;padding:16px;margin-top:14px;border-radius:12p
 <body>
 <div id="login">
 <h1>SHINELYNE</h1>
-<p style="color:#666;margin:10px 0 20px;font-size:12px">SMS ZA SIRI - NAMBA MODE</p>
+<p style="color:#00ff88;margin:10px 0 20px;font-size:11px">● DATABASE YA KUDUMU - SMS HAZIFUTIKI</p>
 <input id="room" value="shinelyne12" placeholder="Room ID">
 <input id="name" placeholder="Jina lako">
-<button onclick="join()">INGIA</button>
+<button onclick="join()">INGIA - SERVER YA KUDUMU</button>
+<div style="margin-top:14px;font-size:10px;color:#333;text-align:center">SMS zitabaki siku 30 hata ukizima simu</div>
 </div>
 <div id="chat">
-<div class="top"><b id="rname"></b><div><span id="status">● Live</span> <span onclick="location.reload()" style="margin-left:12px">✕</span></div></div>
+<div class="top"><b id="rname"></b><div><span id="status">● Live - DB</span> <span onclick="location.reload()" style="margin-left:12px;cursor:pointer">✕</span></div></div>
 <div id="unlockBar">
-<input id="ukey" type="password" placeholder="Weka 1234 kufungua SMS (default 1234)">
+<input id="ukey" type="password" value="1234" placeholder="Key 1234">
 <button onclick="toggleLock()">FUNGUA</button>
-<span id="tmr" style="font-size:11px;color:#ffaa00;margin-left:6px"></span>
+<span id="tmr" style="font-size:11px;color:#ffaa00"></span>
 </div>
-<div id="msgs"><div style="text-align:center;color:#333;padding:40px">Inapakia SMS...</div></div>
+<div id="msgs"><div style="text-align:center;color:#333;padding:40px">Inapakia kutoka Database...</div></div>
 <div class="bottom"><input id="msg" placeholder="Andika..." onkeypress="if(event.key==='Enter')send()"><button onclick="send()">TUMA</button></div>
 </div>
 <script>
 let room,name,all=[],locked=true,timer=null,cd=null;
 const DEFAULT_KEY='1234';
-function toNum(s){let o='';for(let c of s){o+=c.charCodeAt(0).toString(16).padStart(2,'0')}return o.toUpperCase().match(/.{1,24}/g).join(' ')}
+function toNum(s){let o='';for(let c of s){o+=c.charCodeAt(0).toString(16).padStart(2,'0')}return o.toUpperCase().match(/.{1,32}/g).join(' ')}
 function join(){
   room=document.getElementById('room').value.trim()||'general';
   name=document.getElementById('name').value.trim()||'Mtu';
   document.getElementById('login').style.display='none';
   document.getElementById('chat').style.display='flex';
-  document.getElementById('rname').innerText='# '+room;
-  document.getElementById('ukey').value=DEFAULT_KEY;
-  load(); setInterval(load,1500);
+  document.getElementById('rname').innerText='# '+room+' • DB';
+  load(); setInterval(load,2000);
 }
 async function load(){
   try{
     let r=await fetch('/api/messages?room='+encodeURIComponent(room)+'&_='+Date.now());
     let d=await r.json();
     if(!Array.isArray(d)) return;
-    if(d.length===all.length && locked) return; // avoid flicker
-    all=d;
-    render();
-  }catch(e){console.log(e)}
+    if(d.length===all.length && !locked) return;
+    all=d; render();
+  }catch(e){}
 }
 function render(){
   let c=document.getElementById('msgs');
-  if(all.length===0){c.innerHTML='<div style="text-align:center;color:#333;padding:40px">🔒 Hakuna SMS<br>Tuma moja uone kama namba</div>';return}
+  if(all.length===0){c.innerHTML='<div style="text-align:center;color:#333;padding:40px">📭 Hakuna SMS kwenye Database<br><span style="font-size:11px">Tuma ya kwanza!</span></div>';return}
   c.innerHTML='';
   all.forEach(m=>{
     let div=document.createElement('div');
@@ -77,14 +75,12 @@ function render(){
     c.appendChild(div);
   });
   c.scrollTop=c.scrollHeight;
-  document.getElementById('status').innerText='● Live • '+all.length+(locked?' • NAMBA':' • WAZI');
+  document.getElementById('status').innerText='● DB • '+all.length+(locked?' • NAMBA':' • WAZI');
 }
 function toggleLock(){
-  if(!locked){ // lock again
-    locked=true; render(); document.getElementById('tmr').innerText=''; clearTimeout(timer); clearInterval(cd); document.querySelector('#unlockBar button').innerText='FUNGUA'; return;
-  }
+  if(!locked){locked=true; render(); document.getElementById('tmr').innerText=''; clearTimeout(timer); clearInterval(cd); document.querySelector('#unlockBar button').innerText='FUNGUA'; return;}
   let k=document.getElementById('ukey').value.trim();
-  if(k!==DEFAULT_KEY && k!==''){alert('Weka Key: '+DEFAULT_KEY); return}
+  if(k!==DEFAULT_KEY){alert('Key ni: '+DEFAULT_KEY); return}
   locked=false; render();
   let btn=document.querySelector('#unlockBar button'); btn.innerText='FUNGA';
   let s=12; document.getElementById('tmr').innerText='⏳ '+s+'s';
@@ -93,6 +89,6 @@ function toggleLock(){
 }
 async function send(){
   let i=document.getElementById('msg'); let t=i.value.trim(); if(!t)return; i.value='';
-  try{await fetch('/api/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({room,sender:name,message:t})}); load();}catch(e){alert('Error kutuma')}
+  try{await fetch('/api/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({room,sender:name,message:t})}); load();}catch(e){alert('Error')}
 }
 </script></body></html>
